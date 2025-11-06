@@ -25,10 +25,12 @@ app.get("/", (req, res) => {
 
 // Register
 app.post("/register", async (req, res) => {
-  const { username, email, password } = req.body;
-  if (!username || !email || !password)
+  const { username, email, password, age } = req.body;
+  if (!username || !email || !password || !age)
     return res.status(400).json({ error: "All fields required" });
-
+  if (age < 18) {
+    return res.status(403).json({ error: "User must be 18 or older" });
+  }
   try {
     const hashed = await bcrypt.hash(password, 10);
     const result = await pool.query(
@@ -63,7 +65,7 @@ app.post("/login", async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    res.json({ token, username: user.rows[0].username });
+    res.json({ token, username: user.rows[0].username, success: true, userid:user.rows[0].id });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Login failed" });
@@ -167,6 +169,7 @@ app.get("/preferences/:user_id", async (req, res) => {
 
 app.post("/chat/user", async (req, res) => {
   const { user_id, message } = req.body;
+  
   if (!user_id || !message) return res.status(400).json({ error: "user_id and message required" });
 
   try {
@@ -185,7 +188,7 @@ app.post("/chat/user", async (req, res) => {
     // 3️⃣ Build compact context for Ollama
     const prompt = `
 You are a professional bartender assistant. Respond briefly (max 3 sentences) and directly. 
-Base your suggestion on the user's flavor preferences and the official IBA drink list.
+Base your suggestion on the user's flavor preferences and try to stick to official IBA drink list.
 
 USER PREFERENCES:
 - Alcohol preference: ${prefs.alcohol_preference}/10
