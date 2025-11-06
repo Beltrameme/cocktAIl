@@ -1,0 +1,132 @@
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Drinks table
+CREATE TABLE drinks (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    category VARCHAR(50),
+    iba_category VARCHAR(100),
+    alcohol_level INT,         -- scale 1–10
+    sweetness INT,             -- scale 1–10
+    bitterness INT,            -- scale 1–10
+    sourness INT,              -- scale 1–10
+    fruitiness INT,            -- scale 1–10
+    earthiness INT,            -- scale 1–10
+    ingredients TEXT,
+    instructions TEXT
+);
+
+-- User Preferences table
+CREATE TABLE user_preferences (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    alcohol_preference INT,
+    sweetness_preference INT,
+    bitterness_preference INT,
+    sourness_preference INT,
+    fruitiness_preference INT,
+    earthiness_preference INT,
+    allergies TEXT
+);
+
+-- Populate the IBA cocktail list with approximate flavor scores
+-- Scale: 1–10 for each attribute
+
+INSERT INTO drinks
+(name, category, iba_category, alcohol_level, sweetness, bitterness, sourness, fruitiness, earthiness, ingredients, instructions)
+VALUES
+-- Unforgettables
+('Negroni','Classic','Unforgettables',9,3,8,2,2,4,
+ 'Gin, Campari, Sweet Vermouth',
+ 'Stir all ingredients with ice and strain into an old-fashioned glass.'),
+('Old Fashioned','Classic','Unforgettables',8,2,6,1,1,5,
+ 'Bourbon or Rye Whiskey, Sugar, Angostura Bitters, Orange Peel',
+ 'Stir sugar and bitters with water, add whiskey, serve over ice.'),
+('Martini','Classic','Unforgettables',9,1,4,1,1,3,
+ 'Gin, Dry Vermouth, Lemon Twist or Olive',
+ 'Stir with ice and strain into a chilled martini glass.'),
+('Manhattan','Classic','Unforgettables',8,3,5,2,1,4,
+ 'Rye Whiskey, Sweet Vermouth, Angostura Bitters',
+ 'Stir with ice, strain, garnish with cherry.'),
+('Daiquiri','Rum','Unforgettables',7,6,2,7,5,2,
+ 'White Rum, Lime Juice, Sugar Syrup',
+ 'Shake all ingredients with ice and strain into chilled glass.'),
+('Whiskey Sour','Whiskey','Unforgettables',7,5,3,7,3,2,
+ 'Whiskey, Lemon Juice, Sugar Syrup, Egg White (optional)',
+ 'Shake with ice, strain into glass, garnish with cherry and orange slice.'),
+('Sidecar','Cognac','Unforgettables',7,4,3,6,3,2,
+ 'Cognac, Triple Sec, Lemon Juice',
+ 'Shake with ice and strain into cocktail glass rimmed with sugar.'),
+('Boulevardier','Whiskey','Unforgettables',8,3,7,3,1,4,
+ 'Bourbon, Campari, Sweet Vermouth',
+ 'Stir with ice and strain into glass over ice.'),
+
+-- Contemporary Classics
+('Margarita','Tequila','Contemporary Classics',7,5,2,7,4,2,
+ 'Tequila, Triple Sec, Lime Juice',
+ 'Shake with ice, strain into salt-rimmed glass.'),
+('Mojito','Rum','Contemporary Classics',6,7,2,6,8,3,
+ 'White Rum, Lime Juice, Mint, Sugar, Soda Water',
+ 'Muddle mint and sugar, add rum, lime juice, top with soda.'),
+('Piña Colada','Rum','Contemporary Classics',5,9,1,3,9,2,
+ 'White Rum, Coconut Cream, Pineapple Juice',
+ 'Blend with ice and serve in a hurricane glass.'),
+('Cosmopolitan','Vodka','Contemporary Classics',6,6,2,5,7,2,
+ 'Vodka, Triple Sec, Cranberry Juice, Lime Juice',
+ 'Shake with ice and strain into martini glass.'),
+('Mai Tai','Rum','Contemporary Classics',8,6,3,5,8,4,
+ 'White Rum, Dark Rum, Lime Juice, Orange Curaçao, Orgeat Syrup',
+ 'Shake all ingredients with ice, strain into glass with crushed ice.'),
+('Long Island Iced Tea','Mixed','Contemporary Classics',10,5,3,5,3,3,
+ 'Vodka, Tequila, Rum, Gin, Triple Sec, Lemon Juice, Cola',
+ 'Shake all spirits with ice, top with cola.'),
+('Bloody Mary','Vodka','Contemporary Classics',6,2,4,3,2,9,
+ 'Vodka, Tomato Juice, Lemon Juice, Worcestershire, Tabasco, Salt, Pepper',
+ 'Stir gently in tall glass with ice.'),
+('Caipirinha','Cachaça','Contemporary Classics',8,5,2,6,6,3,
+ 'Cachaça, Lime, Sugar',
+ 'Muddle lime and sugar, add cachaça and ice.'),
+('Aperol Spritz','Aperitif','Contemporary Classics',4,6,3,3,5,2,
+ 'Aperol, Prosecco, Soda Water',
+ 'Build in glass with ice, top with soda, garnish with orange slice.'),
+('Espresso Martini','Vodka','Contemporary Classics',7,4,2,2,2,3,
+ 'Vodka, Coffee Liqueur, Espresso, Sugar Syrup',
+ 'Shake all ingredients with ice, strain into chilled glass.'),
+
+-- New Era
+('Clover Club','Gin','New Era',6,6,2,6,7,2,
+ 'Gin, Raspberry Syrup, Lemon Juice, Egg White',
+ 'Shake all ingredients with ice and strain into glass.'),
+('Aviation','Gin','New Era',7,4,2,5,5,2,
+ 'Gin, Maraschino Liqueur, Lemon Juice, Crème de Violette',
+ 'Shake and strain into cocktail glass.'),
+('Brandy Crusta','Cognac','New Era',7,4,3,5,4,3,
+ 'Cognac, Triple Sec, Lemon Juice, Sugar, Angostura Bitters',
+ 'Shake and strain into sugar-rimmed glass.'),
+('French 75','Gin','New Era',6,5,2,6,5,2,
+ 'Gin, Lemon Juice, Sugar Syrup, Champagne',
+ 'Shake first three, strain, top with Champagne.'),
+('Tommy’s Margarita','Tequila','New Era',7,5,2,6,4,2,
+ 'Tequila, Lime Juice, Agave Syrup',
+ 'Shake and strain into old-fashioned glass with ice.'),
+('Paloma','Tequila','New Era',6,5,3,6,5,2,
+ 'Tequila, Grapefruit Soda, Lime Juice, Salt',
+ 'Build in glass with ice, top with soda.'),
+('Dark ’n’ Stormy','Rum','New Era',7,4,2,5,3,5,
+ 'Dark Rum, Ginger Beer, Lime Juice',
+ 'Build in highball glass with ice.'),
+('Penicillin','Whiskey','New Era',8,5,3,6,4,4,
+ 'Blended Scotch, Honey-Ginger Syrup, Lemon Juice, Islay Scotch Float',
+ 'Shake and strain over ice, float smoky whisky.'),
+('Paper Plane','Whiskey','New Era',7,4,4,5,3,2,
+ 'Bourbon, Aperol, Amaro Nonino, Lemon Juice',
+ 'Shake with ice and strain into coupe.'),
+('Gin Basil Smash','Gin','New Era',6,5,2,6,7,3,
+ 'Gin, Lemon Juice, Sugar Syrup, Fresh Basil',
+ 'Muddle basil, shake with ice, strain into glass.');
